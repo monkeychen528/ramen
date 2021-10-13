@@ -12,8 +12,8 @@ const Comment = () => {
 
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
-    if (room) setWs(websocket('http://localhost:3050', { path: room }));
-    setWs(websocket('http://localhost:3050'));
+    if (room) setWs(websocket('https://ramen-chatroom.herokuapp.com/', { path: room }));
+    setWs(websocket('https://ramen-chatroom.herokuapp.com/'));
     setConnect(true);
   };
   // 監聽送回的訊息
