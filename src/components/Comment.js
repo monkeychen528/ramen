@@ -10,7 +10,7 @@ const Comment = () => {
   const [connect, setConnect] = useState(false);
   const [room, setRoom] = useState('大廳');
   const msg = document.querySelector('#msg');
-  const port = process.env === 'production' ? 'https://ramen-chatroom.herokuapp.com/' : 'localhost:3050';
+  const port = process.env.NODE_ENV === 'production' ? 'https://ramen-chatroom.herokuapp.com/' : 'localhost:3050';
 
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
