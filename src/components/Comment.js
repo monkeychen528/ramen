@@ -4,16 +4,19 @@ import websocket from 'socket.io-client';
 import Navbar from './Navbar';
 import '../asset/comment.css';
 
+
 const Comment = () => {
   const [ws, setWs] = useState(null);
   const [connect, setConnect] = useState(false);
   const [room, setRoom] = useState('大廳');
   const msg = document.querySelector('#msg');
+  const port = process.env === 'production' ? 'https://ramen-chatroom.herokuapp.com/' : 'localhost:3050';
 
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
-    if (room) setWs(websocket('https://ramen-chatroom.herokuapp.com/', { path: room }));
-    setWs(websocket('https://ramen-chatroom.herokuapp.com/'));
+    console.log(port, 'kjhgjfj');
+    if (room) setWs(websocket(port, { path: room }));
+    setWs(websocket(port));
     setConnect(true);
   };
   // 監聽送回的訊息
