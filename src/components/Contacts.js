@@ -46,6 +46,9 @@ class Contacts extends Component {
     script.src = 'https://apis.google.com/js/platform.js';
     script.async = true;
     document.body.appendChild(script);
+    // fetch('https://ramen-chatroom.herokuapp.com')
+    //   .then((result) => result.json())
+    //   .then((res) => console.log(res));
   }
 
   setname = (e) => {

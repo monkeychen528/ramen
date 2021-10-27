@@ -10,22 +10,22 @@ const Comment = () => {
   const [connect, setConnect] = useState(false);
   const [room, setRoom] = useState('大廳');
   const msg = document.querySelector('#msg');
-  const port = process.env.NODE_ENV === 'production' ? 'https://ramen-chatroom.herokuapp.com' : 'localhost:3050';
-
+  const port = 'https://ramen-chatroom.herokuapp.com';
+  // const port = 'localhost:3000';
+  // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
-    console.log(port, 'kjhgjfj');
+    // console.log(port, 'kjhgjfj');
     if (room) setWs(websocket(port, { path: room }));
-    setWs(websocket(port));
+    setWs(websocket(port, { transports: ['websocket'], withCredentials: true }));
     setConnect(true);
   };
   // 監聽送回的訊息
   const initWebSocket = () => {
     const showText = document.querySelector('#textBlock');
-    console.log(ws, '這是ws');
     // const 放裡面是要讓每次接收訊息時重新建新的
     ws.on('getMessage', (getMsg) => {
-      // console.log(getMsg);
+      console.log(getMsg);
       const block = document.createElement('p');
       block.innerHTML = getMsg;
       showText.append(block);
@@ -48,7 +48,6 @@ const Comment = () => {
     $(e.target).siblings().css('list-style', 'none');
     ws.emit('changeroom', { nowRoom: roomName });
     setRoom(roomName);
-    console.log(roomName);
   };
   const disconnect = () => {
     console.log('will disconnect');
@@ -62,6 +61,7 @@ const Comment = () => {
       // ws.emit('disconnected');
       initWebSocket();
     } else {
+      console.log('continue connect');
       connectWebSocket();
     }
     // 監聽如果離開頁面則發送disconnect
