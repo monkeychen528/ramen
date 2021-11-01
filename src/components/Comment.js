@@ -10,8 +10,8 @@ const Comment = () => {
   const [connect, setConnect] = useState(false);
   const [room, setRoom] = useState('hole');
   const msg = document.querySelector('#msg');
-  const port = 'https://ramen-chatroom.herokuapp.com';
-  // const port = 'localhost:3000';
+  // const port = 'https://ramen-chatroom.herokuapp.com';
+  const port = 'localhost:3000';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
@@ -35,8 +35,8 @@ const Comment = () => {
   // 送出訊息到websocket
   const sendMessage = () => {
     // 清空textarea 恢復原本高度
-    ws.emit('message',
-      room ? { nowRoom: room, msg: msg.value } : msg.value);
+    console.log(msg.value);
+    ws.emit('message', { id: room, msg: msg.value });
     msg.style.height = '41px';
     msg.value = '';
   };
