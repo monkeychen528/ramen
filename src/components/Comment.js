@@ -8,7 +8,7 @@ import '../asset/comment.css';
 const Comment = () => {
   const [ws, setWs] = useState(null);
   const [connect, setConnect] = useState(false);
-  const [room, setRoom] = useState('大廳');
+  const [room, setRoom] = useState('hole');
   const msg = document.querySelector('#msg');
   const port = 'https://ramen-chatroom.herokuapp.com';
   // const port = 'localhost:3000';
@@ -25,7 +25,7 @@ const Comment = () => {
     const showText = document.querySelector('#textBlock');
     // const 放裡面是要讓每次接收訊息時重新建新的
     ws.on('getMessage', (getMsg) => {
-      console.log(getMsg);
+      console.log(ws, 'this is ws');
       const block = document.createElement('p');
       block.innerHTML = getMsg;
       showText.append(block);
@@ -93,10 +93,10 @@ const Comment = () => {
         <aside>
           <div className="roomWrap">
             <ul>
-              <li className="room" style={{ listStyle: 'unset' }} onClick={changeRoom} role="presentation">大廳</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間一</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間二</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間三</li>
+              <li className="room" style={{ listStyle: 'unset' }} onClick={changeRoom} role="presentation">hole</li>
+              <li className="room" onClick={changeRoom} role="presentation">room1</li>
+              <li className="room" onClick={changeRoom} role="presentation">room2</li>
+              <li className="room" onClick={changeRoom} role="presentation">room3</li>
             </ul>
           </div>
         </aside>
