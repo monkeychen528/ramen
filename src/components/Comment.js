@@ -16,7 +16,7 @@ const Comment = () => {
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
     // console.log(port, 'kjhgjfj');
-    if (room) setWs(websocket(port, { path: room }));
+    // if (room) setWs(websocket(port, { path: room }));
     setWs(websocket(port, { transports: ['websocket'], withCredentials: true }));
     setConnect(true);
   };
