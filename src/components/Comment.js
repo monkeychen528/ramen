@@ -11,13 +11,13 @@ const Comment = () => {
   const [room, setRoom] = useState('hole');
   const msg = document.querySelector('#msg');
   const port = 'https://ramen-chatroom.herokuapp.com';
-  // const port = 'localhost:3000';
+  // const port = 'localhost:3080';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
     // console.log(port, 'kjhgjfj');
     // if (room) setWs(websocket(port, { path: room }));
-    setWs(websocket(port, { transports: ['websocket'], withCredentials: true }));
+    setWs(websocket(port, { transports: ['websocket'], withCredentials: true, id: room }));
     setConnect(true);
   };
   // 監聽送回的訊息
@@ -25,7 +25,7 @@ const Comment = () => {
     const showText = document.querySelector('#textBlock');
     // const 放裡面是要讓每次接收訊息時重新建新的
     ws.on('getMessage', (getMsg) => {
-      console.log(ws, 'this is ws');
+      console.log(getMsg, 'this is getMsg');
       const block = document.createElement('p');
       block.innerHTML = getMsg;
       showText.append(block);
@@ -49,10 +49,10 @@ const Comment = () => {
     ws.emit('changeroom', { nowRoom: roomName });
     setRoom(roomName);
   };
-  const disconnect = () => {
-    console.log('will disconnect');
-    ws.close();
-  };
+  // const disconnect = () => {
+  //   console.log('will disconnect');
+  //   ws.close();
+  // };
 
   // 畫面進入的時候重新連接socket
   useEffect(() => {
@@ -65,25 +65,29 @@ const Comment = () => {
       connectWebSocket();
     }
     // 監聽如果離開頁面則發送disconnect
-    window.addEventListener('popstate', disconnect);
+    // window.addEventListener('popstate', disconnect);
     return () => {
       console.log('remove event');
-      window.removeEventListener('popstate', disconnect);
+      // window.removeEventListener('popstate', disconnect);
     };
   }, [ws]);
 
   // type留言的時候更改textarea高度
   const adjustHeight = (e) => {
+    if (e.keyCode === 13) {
+      sendMessage();
+      return;
+    }
     const grow = Math.ceil(msg.clientHeight);
     const checkHeight = e.target.scrollHeight;
     // 拆開寫,grow取得網頁中的高度，checkoutHeight是換行時就會出現scrollHeight
     // css樣式內部高度預設35px，如果出現scrollHeight代表換行，把text高度設為一樣scroll高度
     // todo bug刪除文字時需要多刪3~6個字才會縮排
-    if (checkHeight >= grow) {
-      msg.style.height = `${checkHeight}px`;
-    } else {
-      msg.style.height = `${grow - 35}px`;
-    }
+    // if (checkHeight >= grow) {
+    //   msg.style.height = `${checkHeight}px`;
+    // } else {
+    //   msg.style.height = `${grow - 35}px`;
+    // }
   };
 
   return (
@@ -93,10 +97,10 @@ const Comment = () => {
         <aside>
           <div className="roomWrap">
             <ul>
-              <li className="room" style={{ listStyle: 'unset' }} onClick={changeRoom} role="presentation">hole</li>
-              <li className="room" onClick={changeRoom} role="presentation">room1</li>
-              <li className="room" onClick={changeRoom} role="presentation">room2</li>
-              <li className="room" onClick={changeRoom} role="presentation">room3</li>
+              <li className="room" style={{ listStyle: 'unset' }} onClick={changeRoom} role="presentation">大廳</li>
+              <li className="room" onClick={changeRoom} role="presentation">房間一</li>
+              <li className="room" onClick={changeRoom} role="presentation">房間二</li>
+              <li className="room" onClick={changeRoom} role="presentation">房間三</li>
             </ul>
           </div>
         </aside>
