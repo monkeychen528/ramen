@@ -1,25 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import $ from 'jquery';
 import websocket from 'socket.io-client';
 import Navbar from './Navbar';
 import '../asset/comment.css';
 
-
 const Comment = () => {
   const [ws, setWs] = useState(null);
   const [connect, setConnect] = useState(false);
   const [room, setRoom] = useState('hole');
+  const [name, setName] = useState('');
   const msg = document.querySelector('#msg');
-  const port = 'https://ramen-chatroom.herokuapp.com';
-  // const port = 'localhost:3080';
+  const user = useRef(null);
+  // const port = 'https://ramen-chatroom.herokuapp.com';
+  const port = 'localhost:3080';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = () => {
     // 伺服器目前是local所以別台電腦無法連接
     // console.log(port, 'kjhgjfj');
     // if (room) setWs(websocket(port, { path: room }));
-    setWs(websocket(port, { transports: ['websocket'], withCredentials: true, id: room }));
-    setConnect(true);
+    // const initUser = document.querySelector('#user');
+    const wsConfig = {
+      transports: ['websocket'],
+      withCredentials: true,
+      id: room,
+    };
+    const wsRequest = websocket(`${port}?name=${user.current.value}`, wsConfig);
+    // console.log(user);
+
+    setWs(wsRequest);
+    console.log(ws);
+    return setConnect(true);
   };
+
   // 監聽送回的訊息
   const initWebSocket = () => {
     const showText = document.querySelector('#textBlock');
@@ -49,21 +61,34 @@ const Comment = () => {
     ws.emit('changeroom', { nowRoom: roomName });
     setRoom(roomName);
   };
-  // const disconnect = () => {
-  //   console.log('will disconnect');
-  //   ws.close();
+  // 暱稱輸入、送出處理
+  // const handleName = (e) => {
+  //   e.persist();
+  //   setName(() => e.target.value);
   // };
+  const nameCheck = () => {
+    connectWebSocket();
+  };
 
   // 畫面進入的時候重新連接socket
   useEffect(() => {
     if (connect) {
-      console.log('success');
-      // ws.emit('disconnected');
       initWebSocket();
-    } else {
-      console.log('continue connect');
-      connectWebSocket();
+      setName(user.current.value);
     }
+    if (ws) {
+      ws.on('connect_error', (err) => {
+        if (err) {
+          alert('名字有人用了喔');
+          setName('');
+          return ws.disconnect();
+        }
+        // return setConnect(true);
+      });
+    }
+    // else {
+    //   connectWebSocket();
+    // }
     // 監聽如果離開頁面則發送disconnect
     // window.addEventListener('popstate', disconnect);
     return () => {
@@ -94,27 +119,59 @@ const Comment = () => {
     <>
       <Navbar />
       <div className="roomBody">
-        <aside>
-          <div className="roomWrap">
-            <ul>
-              <li className="room" style={{ listStyle: 'unset' }} onClick={changeRoom} role="presentation">大廳</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間一</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間二</li>
-              <li className="room" onClick={changeRoom} role="presentation">房間三</li>
-            </ul>
-          </div>
-        </aside>
-        <div>
-          <div className="textWrap">
-            <div id="textBlock">
-              文字訊息
-            </div>
-          </div>
-          <div className="typeWrap">
-            <textarea placeholder="輸入文字" id="msg" onKeyDown={adjustHeight} />
-            <input type="button" onClick={sendMessage} value="送出" />
+        <div className="nameBg">
+          <div className="name_input">
+            <input
+              type="text"
+              id="user"
+              placeholder="請輸入您的暱稱"
+              // onChange={handleName}
+              ref={user}
+            // value={name}
+            />
+            <button type="button" onClick={nameCheck}>送出</button>
           </div>
         </div>
+        {name && (
+          <div className="roomContainer" style={{ display: 'flex' }}>
+            <aside>
+              <div className="roomWrap">
+                <ul>
+                  <li
+                    className="room"
+                    style={{ listStyle: 'unset' }}
+                    onClick={changeRoom}
+                    role="presentation"
+                  >
+                    大廳
+                  </li>
+                  <li className="room" onClick={changeRoom} role="presentation">
+                    房間一
+                  </li>
+                  <li className="room" onClick={changeRoom} role="presentation">
+                    房間二
+                  </li>
+                  <li className="room" onClick={changeRoom} role="presentation">
+                    房間三
+                  </li>
+                </ul>
+              </div>
+            </aside>
+            <div>
+              <div className="textWrap">
+                <div id="textBlock">文字訊息</div>
+              </div>
+              <div className="typeWrap">
+                <textarea
+                  placeholder="輸入文字"
+                  id="msg"
+                  onKeyDown={adjustHeight}
+                />
+                <input type="button" onClick={sendMessage} value="送出" />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

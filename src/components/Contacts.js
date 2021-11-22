@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import Modal from 'react-modal';
-import ReCAPTCHA from 'react-google-recaptcha';
-import Navbar from './Navbar';
-import Footer from './Footer';
-import '../asset/contacts.css';
+import React, { Component } from "react";
+import Modal from "react-modal";
+import ReCAPTCHA from "react-google-recaptcha";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
+import "../asset/contacts.css";
 
 function onChange(value) {
-  console.log('Captcha value:', value);
+  console.log("Captcha value:", value);
 }
 
-Modal.setAppElement('#root');
+Modal.setAppElement("#root");
 
 const formRef = React.createRef();
 const recaptchaRef = React.createRef();
@@ -18,12 +18,12 @@ const phoneExp = /^\d{7,10}$/;
 class Contacts extends Component {
   customStyles = {
     content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
     },
   };
 
@@ -31,10 +31,10 @@ class Contacts extends Component {
     super(props);
     this.state = {
       modalIsOpen: false,
-      name: '',
-      email: '',
-      phone: '',
-      message: '',
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
     };
   }
 
@@ -42,8 +42,8 @@ class Contacts extends Component {
     const form = formRef.current;
     console.log(form);
     form.reset();
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/platform.js';
+    const script = document.createElement("script");
+    script.src = "https://apis.google.com/js/platform.js";
     script.async = true;
     document.body.appendChild(script);
     // fetch('https://ramen-chatroom.herokuapp.com')
@@ -60,8 +60,8 @@ class Contacts extends Component {
   };
 
   setphone = (e) => {
-    document.querySelector('#phone').setCustomValidity('');
-    this.setState({ phone: +(e.target.value) });
+    document.querySelector("#phone").setCustomValidity("");
+    this.setState({ phone: +e.target.value });
   };
 
   setmessage = (e) => {
@@ -71,19 +71,14 @@ class Contacts extends Component {
   validate = () => {
     const form = formRef.current;
     // let check = false;
-    const {
-      email,
-      phone,
-      message,
-    } = this.state;
+    const { email, phone, message } = this.state;
 
     // select選擇棄沒辦法設置在外面，生成dom的時候尚未render，不然就要在constructor前指定原型
     if (phoneExp.test(phone) === false) {
-      document.querySelector('#phone').setCustomValidity('號碼需7~10碼');
+      document.querySelector("#phone").setCustomValidity("號碼需7~10碼");
       return false;
     }
-    document.querySelector('#phone').setCustomValidity('');
-
+    document.querySelector("#phone").setCustomValidity("");
 
     return form.reportValidity();
   };
@@ -91,7 +86,7 @@ class Contacts extends Component {
   showModal = (e) => {
     e.preventDefault();
     const recaptchaValue = recaptchaRef.current.getValue();
-    if (recaptchaValue === '') return alert('請先google驗證');
+    if (recaptchaValue === "") return alert("請先google驗證");
 
     if (this.validate()) {
       // console.log(recaptchaValue);
@@ -109,12 +104,10 @@ class Contacts extends Component {
     console.log(`Name: ${profile.getName()}`);
     console.log(`Image URL: ${profile.getImageUrl()}`);
     console.log(`Email: ${profile.getEmail()}`); // This is null if the 'email' scope is not present.
-  }
-
+  };
 
   sendMail = () => {
     // todo 設定收件人跟取得資料設定
-
     // const {
     //   name,
     //   email,
@@ -130,16 +123,10 @@ class Contacts extends Component {
     // body += `訊息: ${message} %0A`;
     // mailTo.href = `mailto:${to}?subject=${subject}&body=${body}`;
     // mailTo.click();
-  }
+  };
 
   render() {
-    const {
-      modalIsOpen,
-      name,
-      email,
-      phone,
-      message,
-    } = this.state;
+    const { modalIsOpen, name, email, phone, message } = this.state;
     return (
       <>
         <Navbar />
@@ -151,9 +138,7 @@ class Contacts extends Component {
                 <p>作者:陳以十</p>
                 <p>
                   我的:
-                  <a href="https://github.com/monkeychen528">
-                    github
-                  </a>
+                  <a href="https://github.com/monkeychen528">github</a>
                 </p>
                 <p>E-mail：monkeychen528@gmail.com</p>
               </div>
@@ -165,11 +150,7 @@ class Contacts extends Component {
           <div className="contactRight pt-2">
             <p>任何問題都歡迎您透過以下表單詢問，我們會盡快回覆您！</p>
             <form ref={formRef}>
-              <input
-                placeholder="名字"
-                required
-                onChange={this.setname}
-              />
+              <input placeholder="名字" required onChange={this.setname} />
               <input
                 type="email"
                 placeholder="信箱"
@@ -194,7 +175,11 @@ class Contacts extends Component {
               />
               <div className="g-signin2" data-onsuccess="onSignIn" />
               {/* <div className="g-recaptcha" data-sitekey="6LceQNoUAAAAAGh_LcEkvu43qxaCiudBleGwjUn1" /> */}
-              <button type="submit" onClick={this.showModal} className="contactbtn">
+              <button
+                type="submit"
+                onClick={this.showModal}
+                className="contactbtn"
+              >
                 送出
               </button>
             </form>
@@ -205,11 +190,7 @@ class Contacts extends Component {
               contentLabel="Example Modal"
             >
               <form id="myform" encType="text/plain" acceptCharset="utf-8">
-                <input
-                  placeholder="名字"
-                  disabled
-                  defaultValue={name}
-                />
+                <input placeholder="名字" disabled defaultValue={name} />
                 <input
                   type="email"
                   placeholder="信箱"
@@ -222,12 +203,13 @@ class Contacts extends Component {
                   disabled
                   defaultValue={phone}
                 />
-                <textarea
-                  placeholder="請留下你的訊息"
-                  defaultValue={message}
-                />
+                <textarea placeholder="請留下你的訊息" defaultValue={message} />
                 {/* 我不是機器人驗證 */}
-                <button type="submit" className="contactbtn" onClick={this.sendMail}>
+                <button
+                  type="submit"
+                  className="contactbtn"
+                  onClick={this.sendMail}
+                >
                   送出
                   {/* <a id="mailTo" /> */}
                 </button>
