@@ -1,61 +1,84 @@
-.roomBody{
-    display: flex;
-    min-height: calc(100vh - 70.7px);
+.roomBody {
+  display: flex;
+  min-height: calc(100vh - 70.7px);
+  position: relative;
 }
 
-.roomBody aside{
-    flex-basis:250px;
-    background: linear-gradient(to top, rgb(27, 26, 26), rgb(25, 25, 42));
+.nameBg {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.nameBg .user_label {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.nameBg .user_label_text {
+  transition: 0.5s;
+}
+
+.nameBg #user:focus + .user_label_text {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.roomBody aside {
+  flex-basis: 250px;
+  background: linear-gradient(to top, rgb(27, 26, 26), rgb(25, 25, 42));
 }
 
 /* 右邊文字區塊container */
-.roomBody aside+div{
-    width: 100%;
-    padding: 1rem;
+.roomBody aside + div {
+  width: 100%;
+  padding: 1rem;
 }
 
-.room{
-    margin: 0 auto;
-    line-height: 1rem;
-    padding:1rem;
-    color: #fafafa;
-    font-size:1.5rem;
-    transition: .5s;
+.room {
+  margin: 0 auto;
+  line-height: 1rem;
+  padding: 1rem;
+  color: #fafafa;
+  font-size: 1.5rem;
+  transition: 0.5s;
 }
 
-.room:hover{
-    background: rgb(200,80,5) ;
-    cursor: pointer;
-    border-radius: 25px;
+.room:hover {
+  background: rgb(200, 80, 5);
+  cursor: pointer;
+  border-radius: 25px;
 }
 
-.textWrap{
-    position: relative;
-    overflow-y: auto;
-    min-height: 80vh;
-    
+.textWrap {
+  position: relative;
+  overflow-y: auto;
+  min-height: 80vh;
 }
 /* .textWrap + input{
     width: 85%;
 } */
 
-#textBlock{
-    min-height: 100%;
-    width: 60vw;
-    overflow-wrap: break-word;
+#textBlock {
+  min-height: 100%;
+  width: 60vw;
+  overflow-wrap: break-word;
 }
 
 /* 打字textarea */
-.typeWrap{
-    display:flex;
-    justify-content: center;
-    align-items: center;
+.typeWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.typeWrap textarea{
-    width: 85%;
-    height: 36px;
-    resize: none;
-    overflow: hidden;
-    word-wrap: break-word;
-    padding: 0;
+.typeWrap textarea {
+  width: 85%;
+  height: 36px;
+  resize: none;
+  overflow: hidden;
+  word-wrap: break-word;
+  padding: 0;
 }
