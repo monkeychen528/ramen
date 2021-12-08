@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const Dotenv = require('dotenv-webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // 重要觀念
@@ -44,6 +45,13 @@ module.exports = {
       template: './src/index.html',
     }),
     new CleanWebpackPlugin({ cleanOnceBeforeBuildPatterns: ['*.js', '*.map', '*.html'] }),
+    new Dotenv({
+      path:
+        process.env.NODE_ENV === 'development'
+          ? './.env.dev'
+          : './.env.prd',
+      systemvars: true, // 開啟讀取 process.env 下的任意系統變量(cross-env環境運行、Dotenv是編譯時讀取)
+    }),
   ],
   module: { // module指的是 模組引入語法統一
     // rules的值是一個陣列可以存放多個loader物件

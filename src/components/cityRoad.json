@@ -1,7 +1,7 @@
 [
     {
         "CityName": "臺北市",
-        "CityEngName": "Taipei City",
+        "CityEngName": "Taipei",
         "LatLng": {
             "lat": 25.03746,
             "lng": 121.564558

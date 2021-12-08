@@ -24,6 +24,7 @@ const Comment = () => {
       withCredentials: true,
       id: room,
     };
+    console.log(user.current.value);
     const wsRequest = websocket(`${port}?name=${user.current.value}`, wsConfig);
     // console.log(user);
 

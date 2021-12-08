@@ -17,7 +17,7 @@ export default class MyMap extends React.Component {
       selectedDist: '',
       InDistAreaData: [],
       data: [],
-      tempMarker: []
+      tempMarker: [],
     };
   }
 
@@ -89,10 +89,10 @@ export default class MyMap extends React.Component {
     }
     map.panTo(lat.split(','));// 經緯度從逗號切開
     e.persist();
+    console.log(process.env.MAP_CITY);
     try {
-      const res = await fetch('https://my-json-server.typicode.com/monkeychen528/demo/Taipei');
+      const res = await fetch(`${process.env.MAP_CITY}/${e.target.value}`);
       const json = await res.json();
-      console.log('https://my-json-server.typicode.com/monkeychen528/demo/' + e.target.value);
       console.log(json);
 
       this.setState({
@@ -108,7 +108,6 @@ export default class MyMap extends React.Component {
 
   changeDist = (e) => {
     const selectedDistData = this.state.data.filter((item) => {
-
       if (Object.keys(item)[0] === e.target.value) return item;
       // console.log(Object.keys(item)[0] === e.target.value ? Object.values(item)[0] : [])
     });
@@ -142,7 +141,7 @@ export default class MyMap extends React.Component {
               <select onChange={this.handleChange} id="city">
                 <option value={undefined}>請選擇縣市</option>
                 {cityRoad.map((item) => (
-                  <option key={item.CityName} data-place={Object.values(item.LatLng)}>
+                  <option key={item.CityName} data-place={Object.values(item.LatLng)} value={item.CityEngName}>
                     {item.CityName}
                   </option>
                 ))}
@@ -152,7 +151,7 @@ export default class MyMap extends React.Component {
                 selected !== '請選擇縣市' ? (
                   <select className="toggleSlide" onChange={this.changeDist}>
                     {cityRoad.map((item) => (
-                      item.CityName === selected ? (
+                      item.CityEngName === selected ? (
                         item.AreaList.map((dist) => (
                           <option key={dist.ZipCode}>
                             {dist.AreaName}
@@ -171,6 +170,7 @@ export default class MyMap extends React.Component {
                       {/* <img src={`images/${item.img}`} alt="" /> */}
                       <h4>
                         {item.name}
+                        <br />
                         <small>
                           {`  電話: ${item.tel}`}
                           <br />
