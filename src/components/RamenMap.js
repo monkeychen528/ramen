@@ -89,11 +89,9 @@ export default class MyMap extends React.Component {
     }
     map.panTo(lat.split(','));// 經緯度從逗號切開
     e.persist();
-    console.log(process.env.MAP_CITY);
     try {
       const res = await fetch(`${process.env.MAP_CITY}/${e.target.value}`);
       const json = await res.json();
-      console.log(json);
 
       this.setState({
         selected: city.value,
@@ -166,6 +164,7 @@ export default class MyMap extends React.Component {
               {
                 InDistAreaData ? InDistAreaData.map((item) => (
                   <figure key={item.id}>
+                    {/* to do link轉回到google、是否新增圖片瀏覽(需要爬蟲處理圖片格式、儲存大小) */}
                     <Link to="./">
                       {/* <img src={`images/${item.img}`} alt="" /> */}
                       <h4>

@@ -14,33 +14,26 @@ const Comment = () => {
   const port = 'https://ramen-chatroom.herokuapp.com';
   // const port = 'localhost:3080';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
-  const connectWebSocket = () => {
-    // 伺服器目前是local所以別台電腦無法連接
-    // console.log(port, 'kjhgjfj');
-    // if (room) setWs(websocket(port, { path: room }));
-    // const initUser = document.querySelector('#user');
+  const connectWebSocket = async () => {
     const wsConfig = {
       transports: ['websocket'],
       withCredentials: true,
       id: room,
     };
-    console.log(user.current.value);
-    const wsRequest = websocket(`${port}?name=${user.current.value}`, wsConfig);
-    // console.log(user);
+    const wsRequest = await websocket(`${port}?name=${user.current.value}`, wsConfig);
 
     setWs(wsRequest);
     console.log(ws);
-    return setConnect(true);
   };
 
   // 監聽送回的訊息
   const initWebSocket = () => {
     // const 放裡面是要讓每次接收訊息時重新建新的
-    ws.on('getMessage', (getMsg) => {
+    setConnect(true);
+    ws.on('getMessage', ({ getMsg, username }) => {
       const showText = document.querySelector('#textBlock');
-      console.log(showText);
       const block = document.createElement('p');
-      block.innerHTML = `${name} : ${getMsg}`;
+      block.innerHTML = `${username} : ${getMsg}`;
       showText.append(block);
     });
   };
@@ -48,8 +41,7 @@ const Comment = () => {
   // 送出訊息到websocket
   const sendMessage = () => {
     // 清空textarea 恢復原本高度
-    console.log(msg.current.value);
-    ws.emit('message', { id: room, msg: msg.current.value });
+    ws.emit('message', { id: room, msg: msg.current.value, username: name });
     msg.current.style.height = '41px';
     msg.current.value = '';
   };
@@ -63,7 +55,7 @@ const Comment = () => {
     setRoom(roomName);
   };
   // 暱稱輸入、送出處理
-  const handleName = (e) => {
+  const handleName = () => {
     // e.persist();
     const userLabelText = document.querySelector('.user_label_text');
     userLabelText.style.opacity = 0;
@@ -81,25 +73,19 @@ const Comment = () => {
   const noOnline = () => ws.emit('disconnected');
   // 畫面進入的時候重新連接socket
   useEffect(() => {
-    // if (connect) {
-    // }
     if (ws) {
-      ws.on('connect_error', (err) => {
-        if (err) {
-          alert('名字有人用了喔');
-          setName('');
-          return ws.disconnect();
-        }
-        // return setConnect(true);
-      });
-
       ws.on('connect', () => {
         initWebSocket();
       });
+      ws.on('connect_error', (err) => { // 錯誤處理
+        if (Number(err.status) === 400) {
+          alert('匿名已有人使用');
+          setName('');
+          setConnect(false);
+          return ws.disconnect();
+        }
+      });
     }
-    // else {
-    //   connectWebSocket();
-    // }
     // 監聽如果離開頁面則發送disconnect
     window.addEventListener('popstate', noOnline);
     return () => {
@@ -130,8 +116,8 @@ const Comment = () => {
     <>
       <Navbar />
       <div className="roomBody">
-        {name ? null : (
-          <div className="nameBg">
+        <div className={connect ? '' : 'nameBg'}>
+          {name ? null : (
             <div className="name_input">
               <label htmlFor="user" className="user_label">
                 <input
@@ -145,11 +131,12 @@ const Comment = () => {
                 />
                 <span className="user_label_text">您的暱稱是?</span>
               </label>
-              <button type="button" disabled={!connect}>送出</button>
+              <button type="button">送出</button>
             </div>
-          </div>
-        )}
-        {name && (
+          )}
+          {name && !connect ? 'Loading...' : null}
+        </div>
+        {connect && (
           <div className="roomContainer" style={{ display: 'flex' }}>
             <aside>
               <div className="roomWrap">
