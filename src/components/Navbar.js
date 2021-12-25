@@ -14,9 +14,9 @@ const show = () => {
 
 const Navbar = (props) => {
   const [toggleslide, setToggleslide] = useState(true);
+  const [isTop, setIsTop] = useState(true);
   const { page } = props;
   const router = useLocation();
-  console.log(router)
 
   const body = document.querySelector('body');
   window.addEventListener('resize', () => {
@@ -30,7 +30,7 @@ const Navbar = (props) => {
   justify-content: space-between;
   position: ${() => (page === 'content' ? 'fixed' : 'relative')};
   top: 0;
-  width:100%;
+  width: 100%;
   box-shadow: 2px 2px 3px rgb(10, 10, 39);
   background: rgb(200, 80, 5);
   z-index: 3;
@@ -53,42 +53,47 @@ const Navbar = (props) => {
     }
     `;
 
-  // 在地圖的頁面時
-  // 決定是否跑動畫
-  const slideAnimate = () => {
-    if (toggleslide || $(window).scrollTop() === 0) {
-      $('#header').removeClass('short');
-      $('.mynav').css({ display: '' });
-    } else {
-      $('#header').addClass('short');
-      $('.mynav').css({ display: 'none' });
-    }
-  };
 
-  // 滑鼠滾動事件改變state讓nav伸縮
-  const scrollfn = useCallback(() => {
-    const header = document.querySelector('#header');
-    // console.log(header.className);
-    if ($(window).scrollTop() > header.clientHeight) {
-      setToggleslide(false);
-    } else if ($(window).scrollTop() < $('#header').height()) {
-      setToggleslide(true);
-    }
-    slideAnimate();
-  }, [toggleslide]);
   useEffect(() => {
-    window.addEventListener('scroll', scrollfn);
-    return () => window.removeEventListener('scroll', scrollfn);
-  });
+    const IO = new IntersectionObserver((entries, observer) => {
+      entries.forEach((el) => {
+        if (el.intersectionRatio > 0) {
+          setIsTop(true);
+          return setToggleslide(true);
+        }
+        if (el.intersectionRatio === 0) {
+          setToggleslide(false);
+          setIsTop(false);
+        }
+      });
+    });
+
+    const el = document.querySelector('header');
+    IO.observe(el);
+  }, []);
+  // 滑鼠滾動事件改變state讓nav伸縮
+  // const scrollfn = useCallback(() => {
+  //   const header = document.querySelector('#header');
+  //   // console.log(header.className);
+  //   if ($(window).scrollTop() > header.clientHeight) {
+  //     setToggleslide(false);
+  //   } else if ($(window).scrollTop() < $('#header').height()) {
+  //     setToggleslide(true);
+  //   }
+  //   slideAnimate();
+  // }, [toggleslide]);
+  // useEffect(() => {
+  //   window.addEventListener('scroll', scrollfn);
+  //   return () => window.removeEventListener('scroll', scrollfn);
+  // });
 
   // 滑鼠移入移出logo事件
   const handleIn = () => {
     setToggleslide(true);
-    slideAnimate();
   };
   const handleOut = () => {
+    if (isTop === true) return; // 頁面已在頂層
     setToggleslide(false);
-    slideAnimate();
   };
 
   return (
@@ -97,8 +102,8 @@ const Navbar = (props) => {
           ${Header}
           ` : ''}
       >
-        <MainNav id="header">
-          <div className="logo" onMouseOver={handleIn} onMouseLeave={handleOut} onFocus={() => 0}>
+        <MainNav id="header" className={toggleslide ? '' : 'short'} onMouseLeave={handleOut}>
+          <div className="logo" onMouseOver={handleIn} onFocus={() => 0}>
             <Link to="/">
               <img src="./images/logo.svg" alt="ramenLogo" />
             </Link>

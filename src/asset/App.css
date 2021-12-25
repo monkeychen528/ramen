@@ -24,6 +24,9 @@ li {
 }
 /* 動畫class */
 .short{
+  width: 70px;
+  height: 70px;
+  overflow: hidden;
   animation: short 1s forwards ;
 }
 .toggleSlide{

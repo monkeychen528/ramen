@@ -35,6 +35,9 @@
     animation: gorotate 0.8s alternate infinite forwards;
     transform-origin: top left;
   }
+  header{
+    height: 70px;
+  }
   
   header li a {
     padding: 6px;

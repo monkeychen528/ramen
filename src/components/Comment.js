@@ -11,8 +11,8 @@ const Comment = () => {
   const [name, setName] = useState('');
   const msg = useRef(null);
   const user = useRef(null);
-  const port = 'https://ramen-chatroom.herokuapp.com';
-  // const port = 'localhost:3080';
+  // const port = 'https://ramen-chatroom.herokuapp.com';
+  const port = 'localhost:3080';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = async () => {
     const wsConfig = {
@@ -77,9 +77,10 @@ const Comment = () => {
       ws.on('connect', () => {
         initWebSocket();
       });
-      ws.on('connect_error', (err) => { // 錯誤處理
-        if (Number(err.status) === 400) {
-          alert('匿名已有人使用');
+      ws.on('connect_error', (err) => { // 錯誤處理 Error物件 name message內建兩種屬性
+        const res = JSON.parse(err.message);
+        if (Number(res.status) === 400) {
+          alert(res.errMsg);
           setName('');
           setConnect(false);
           return ws.disconnect();
