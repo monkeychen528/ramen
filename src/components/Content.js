@@ -86,9 +86,9 @@ const Content = () => {
   }, [stnum, rwdWidth]);
 
   const scrollWindow = () => {
+    // todo 改為IO的方式
     const top = 0 || $(window).scrollTop();
 
-    // console.log(top);
     switch (top > 0) {
       case (top < 300 && top > 150): {
         return $('.imgWrap').eq(0).addClass('leftIn');
@@ -102,14 +102,13 @@ const Content = () => {
       default:
         break;
     }
-
   };
   useEffect(() => {
     window.addEventListener('scroll', scrollWindow);
     return () => {
       window.removeEventListener('scroll', scrollWindow);
     };
-  });
+  }, []);
 
   useEffect(() => {
     const { num } = state;

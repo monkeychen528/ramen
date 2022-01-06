@@ -11,8 +11,8 @@ const Comment = () => {
   const [name, setName] = useState('');
   const msg = useRef(null);
   const user = useRef(null);
-  // const port = 'https://ramen-chatroom.herokuapp.com';
-  const port = 'localhost:3080';
+  const port = 'https://ramen-chatroom.herokuapp.com';
+  // const port = 'localhost:3080';
   // process.env.NODE_ENV === 'production' ?: 'localhost:3050';
   const connectWebSocket = async () => {
     const wsConfig = {
