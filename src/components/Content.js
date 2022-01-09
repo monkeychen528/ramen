@@ -9,9 +9,9 @@ import Footer from './Footer';
 import Article from './Article';
 import '../asset/content.css';
 
-const initialState = { num: 0 };
 
 const Content = () => {
+  const initialState = { num: 0 };
   const [rwdWidth, setRwdWidth] = useState(0);
   // const [num, setNum] = useState(0);
   const [stnum, setStnum] = useState(0);
@@ -19,11 +19,9 @@ const Content = () => {
 
   // 分隔線
   const [state, dispatch] = useReducer(reducer, initialState);
-  const body = document.querySelector('body');
 
   // 大版面跑馬燈
   const bigCarousel = (i = state.num) => {
-    // console.log(i);
     const carouselImg = document.querySelectorAll('.carousel-img');
     const circle = document.querySelectorAll('.circle');
     $(circle[i])
@@ -42,7 +40,7 @@ const Content = () => {
     }, 1000);
   };
   // 嘗試使用reducer,分離每秒換下一張跟滑鼠點擊更動state動作
-  function reducer(state, action) {
+  function reducer(initState, action) {
     // action會去接disatch出來的東西
     switch (action.type) {
       case 'tick': {
@@ -56,10 +54,12 @@ const Content = () => {
       case 'jumpTo': {
         return {
           num: action.jump,
+          todo: action.todo(action.jump),
         };
       }
       default:
-        return console.log('no');
+        console.log('no');
+        return initState;
     }
   }
 
@@ -85,46 +85,33 @@ const Content = () => {
     bigCarousel();
   }, [stnum, rwdWidth]);
 
-  const scrollWindow = () => {
-    // todo 改為IO的方式
-    const top = 0 || $(window).scrollTop();
-
-    switch (top > 0) {
-      case (top < 300 && top > 150): {
-        return $('.imgWrap').eq(0).addClass('leftIn');
-      }
-      case (top < 500 && top > 300): {
-        return $('.imgWrap').eq(1).addClass('rightIn');
-      }
-      case (top > 500): {
-        return $('.imgWrap').eq(2).addClass('leftIn');
-      }
-      default:
-        break;
-    }
-  };
   useEffect(() => {
-    window.addEventListener('scroll', scrollWindow);
-    return () => {
-      window.removeEventListener('scroll', scrollWindow);
-    };
+    const IO = new IntersectionObserver((entries, observe) => {
+      entries.forEach((ctx) => {
+        if (ctx.intersectionRatio !== 1) return;
+        const isLeftIn = ctx.intersectionRect.left < ctx.rootBounds.width / 2; // check className leftIn or rightIn
+        if (isLeftIn) ctx.target.classList.add('leftIn');
+        if (!isLeftIn) ctx.target.classList.add('rightIn');
+        // ctx.target.classList.add('rightIn');
+        observe.unobserve(ctx.target);
+      });
+    }, { threshold: 1 });
+    const els = document.querySelectorAll('.imgWrap');
+    els.forEach((el) => IO.observe(el));
   }, []);
 
   useEffect(() => {
-    const { num } = state;
-    // console.log(`out:${num}`);
     // interval裡面有自己的區塊外面值傳不到裡面，todo像官網的payload定義一個function，之後reducer呼叫
-    // dispatch介紹發出去的動作到reducer裡面是確保靜態的狀態(也就是更改狀態)
-    // num判斷state現在元件的位置
+    // dispatch為發出去的動作、更動值，reducer裡面是確保靜態的狀態(也就是更改狀態)不可有副作用
+    // num 為舊的值、元件的位置
     const interval = setInterval(() => {
-      dispatch({ type: 'tick', todo: bigCarousel, num: num === 3 ? 0 : num + 1 });
+      dispatch({ type: 'tick', todo: bigCarousel, num: state.num === 3 ? 0 : state.num + 1 });
     }, 5000);
+
     // 這邊每次在更改狀態後把舊的計數器清掉
     // ex:今天記數+1，清舊的計時器，在生成畫面時啟動新的計時器，若此時用滑鼠點擊更動state，這邊depend知道num更動了，故清舊的計時器在產生新的
-    return () => {
-      clearInterval(interval);
-    };
-  }, [dispatch, state.num, state.jump]);
+    return () => clearInterval(interval);
+  }, [state.num]);
 
 
   useEffect(() => {
@@ -136,36 +123,38 @@ const Content = () => {
   }, [stnum, resizeWindow]);
 
 
-  // console.log(state);
   const tempData = ['山頭火', '鷹流', '凪', '鳥人'];
   return (
     <>
       <main>
         <div className="carousel-wrap position-relative">
           <ul className="d-flex m-0 p-0">
-            <li
-              className="circle circleActive"
-              onClick={
-                () => {
-                  dispatch({
-                    jump: 0,
-                    type: 'jumpTo',
-                  });
-                  bigCarousel(0);
+            {tempData.map((val, ind) => (
+              <li
+                className={['circle', ind === state.num ? 'circleActive' : ''].join(' ')}
+                key={val}
+                onClick={
+                  () => {
+                    dispatch({
+                      jump: ind,
+                      todo: bigCarousel,
+                      type: 'jumpTo',
+                    });
+                  }
                 }
-              }
-              role="presentation"
-            />
+                role="presentation"
+              />
+            ))}
 
-            <li
+
+            {/* <li
               className="circle"
               onClick={() => {
                 dispatch({
                   jump: 1,
+                  todo: bigCarousel,
                   type: 'jumpTo',
-                  // function: bigCarousel,
                 });
-                bigCarousel(1);
               }}
               role="presentation"
             />
@@ -174,10 +163,9 @@ const Content = () => {
               onClick={() => {
                 dispatch({
                   jump: 2,
+                  todo: bigCarousel,
                   type: 'jumpTo',
-                  // function: bigCarousel,
                 });
-                bigCarousel(2);
               }}
               role="presentation"
             />
@@ -186,27 +174,19 @@ const Content = () => {
               onClick={() => {
                 dispatch({
                   jump: 3,
+                  todo: bigCarousel,
                   type: 'jumpTo',
-                  // function: bigCarousel,
                 });
-                bigCarousel(3);
               }}
               role="presentation"
-            />
+            /> */}
           </ul>
           <div className="carousel d-flex">
-            <Link to="./" className="carousel-img">
-              <img src="./images/ramen1.jpg" alt="山頭火" />
-            </Link>
-            <Link to="./" className="carousel-img">
-              <img src="./images/ramen2.jpg" alt="鷹流" />
-            </Link>
-            <Link to="./" className="carousel-img">
-              <img src="./images/ramen3.jpg" alt="凪" />
-            </Link>
-            <Link to="./" className="carousel-img">
-              <img src="./images/ramen5.jpg" alt="鳥人" />
-            </Link>
+            {tempData.map((store, ind) => (
+              <Link to="./" className="carousel-img" key={`link${store}`}>
+                <img src={`./images/ramen${ind + 1}.jpg`} alt={store} />
+              </Link>
+            ))}
           </div>
         </div>
         <h2 className="title title-color">
@@ -295,7 +275,7 @@ const Content = () => {
         <section className="container">
           <h2 className="title">食記文章</h2>
           <div className=" d-flex justify-content-between">
-            <Article />
+            {/* <Article /> */}
           </div>
           <Link className="font-color" to="./">
             ...更多文章

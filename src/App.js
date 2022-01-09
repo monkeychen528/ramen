@@ -2,11 +2,11 @@ import React, { Suspense, lazy } from 'react';
 import './asset/App.css';
 import 'bootstrap';
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
-import Comment from './components/Comment';
+import Comment from './views/Comment';
 
-const ContentIndex = lazy(() => import('./components/ContentIndex'));
-const Contacts = lazy(() => import('./components/Contacts'));
-const MapIndex = lazy(() => import('./components/MapIndex'));
+const ContentIndex = lazy(() => import('./views/ContentIndex'));
+const Contacts = lazy(() => import('./views/Contacts'));
+const MapIndex = lazy(() => import('./views/MapIndex'));
 
 // react 新渲染功能套件lazy,Suspense(裡面是放callback如果loading就套用callback裡的套件)
 function App() {

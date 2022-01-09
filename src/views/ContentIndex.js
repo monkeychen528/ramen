@@ -1,6 +1,6 @@
 import React from 'react';
-import Navbar from './Navbar';
-import Content from './Content';
+import Navbar from '../components/Navbar';
+import Content from '../components/Content';
 // todo拆出nav位置&地圖導入資料
 const ContentIndex = () => (
   <>

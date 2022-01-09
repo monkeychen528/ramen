@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import Modal from "react-modal";
-import ReCAPTCHA from "react-google-recaptcha";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
-import "../asset/contacts.css";
+import React, { Component } from 'react';
+import Modal from 'react-modal';
+import ReCAPTCHA from 'react-google-recaptcha';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import '../asset/contacts.css';
 
 function onChange(value) {
-  console.log("Captcha value:", value);
+  console.log('Captcha value:', value);
 }
 
-Modal.setAppElement("#root");
+Modal.setAppElement('#root');
 
 const formRef = React.createRef();
 const recaptchaRef = React.createRef();
@@ -18,12 +18,12 @@ const phoneExp = /^\d{7,10}$/;
 class Contacts extends Component {
   customStyles = {
     content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
     },
   };
 
@@ -31,10 +31,10 @@ class Contacts extends Component {
     super(props);
     this.state = {
       modalIsOpen: false,
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
     };
   }
 
@@ -42,8 +42,8 @@ class Contacts extends Component {
     const form = formRef.current;
     console.log(form);
     form.reset();
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/platform.js";
+    const script = document.createElement('script');
+    script.src = 'https://apis.google.com/js/platform.js';
     script.async = true;
     document.body.appendChild(script);
     // fetch('https://ramen-chatroom.herokuapp.com')
@@ -60,7 +60,7 @@ class Contacts extends Component {
   };
 
   setphone = (e) => {
-    document.querySelector("#phone").setCustomValidity("");
+    document.querySelector('#phone').setCustomValidity('');
     this.setState({ phone: +e.target.value });
   };
 
@@ -75,10 +75,10 @@ class Contacts extends Component {
 
     // select選擇棄沒辦法設置在外面，生成dom的時候尚未render，不然就要在constructor前指定原型
     if (phoneExp.test(phone) === false) {
-      document.querySelector("#phone").setCustomValidity("號碼需7~10碼");
+      document.querySelector('#phone').setCustomValidity('號碼需7~10碼');
       return false;
     }
-    document.querySelector("#phone").setCustomValidity("");
+    document.querySelector('#phone').setCustomValidity('');
 
     return form.reportValidity();
   };
@@ -86,7 +86,7 @@ class Contacts extends Component {
   showModal = (e) => {
     e.preventDefault();
     const recaptchaValue = recaptchaRef.current.getValue();
-    if (recaptchaValue === "") return alert("請先google驗證");
+    if (recaptchaValue === '') return alert('請先google驗證');
 
     if (this.validate()) {
       // console.log(recaptchaValue);
@@ -126,7 +126,9 @@ class Contacts extends Component {
   };
 
   render() {
-    const { modalIsOpen, name, email, phone, message } = this.state;
+    const {
+      modalIsOpen, name, email, phone, message,
+    } = this.state;
     return (
       <>
         <Navbar />

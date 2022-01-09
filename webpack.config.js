@@ -10,7 +10,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 // publicPath is what url you have in js, css and etc files.
 module.exports = {
   devtool: 'eval',
-  entry: ['./src/index.js', './src/components/Article.js', './src/components/MapIndex.js'],
+  entry: ['./src/index.js', './src/views/ContentIndex.js', './src/views/MapIndex.js'],
   output: {
     path: path.resolve(__dirname, 'public'), // 此為輸出的位置，通常跟index.html一起輸出，第二個參數不用斜線不然會去找/public這個資料夾
     filename: '[name].js',

@@ -1,6 +1,6 @@
 import React from 'react';
-import RamenMap from './RamenMap';
-import Navbar from './Navbar';
+import RamenMap from '../components/RamenMap';
+import Navbar from '../components/Navbar';
 // todo地圖導入資料
 const MapIndex = () => (
   <>

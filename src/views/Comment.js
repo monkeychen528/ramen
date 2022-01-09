@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import $ from 'jquery';
 import websocket from 'socket.io-client';
-import Navbar from './Navbar';
+import Navbar from '../components/Navbar';
 import '../asset/comment.css';
 
 const Comment = () => {
